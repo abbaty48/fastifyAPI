@@ -16,6 +16,8 @@ module.exports = async function (fastify, opts) {
   // through your application
   fastify.register(AutoLoad, {
     dir: path.join(__dirname, 'plugins'),
+    ignorePattern: /.*.no-load\.js/,
+    indexPattern: /^no$/i
     options: Object.assign({}, opts)
   })
 
