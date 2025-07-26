@@ -1,11 +1,16 @@
 const fp = require('fastify-plugin');
 const fe = require('@fastify/env');
 
-module.exports = fp(function(fastify, options, next) {
-  fastify.register(fe, {
+module.exports = fp(async function(fastify, options) {
+  await fastify.register(fe, {
     confKey: "secrets",
     schema: fastify.getSchema('schema:dotenv')
   });
-  next();
-
-}, {name: 'application-config'});
+  
+  fastify.decorate('config', {
+    mongo: {
+      forceClose: true,
+      url: fastify.secrets.MONGO_URL
+    }
+  })
+});
