@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "$id": "schema:dotenv",
+  "required": ["MONGO_URL"],
+  "properties": {
+    "NODE_ENV": {"type": "string", "default": "developement"},
+    "PORT": {"type": "number", "default": 3000},
+    "MONGO_URL": {"type": "string"}
+  }
+}

@@ -8,8 +8,8 @@
   },
   "scripts": {
     "test": "node --test test/**/*.test.js",
-    "start": "fastify start -l info app.js",
-    "dev": "fastify start -w -l info -P app.js",
+    "start": "fastify start info app.js",
+    "dev": "fastify start -w -P app.js",
     "lint": "standard",
     "lint:fix": "standard --fix",
     "protest": "npm run test"
@@ -19,6 +19,7 @@
   "license": "ISC",
   "dependencies": {
     "@fastify/autoload": "^6.0.0",
+    "@fastify/env": "^5.0.2",
     "@fastify/sensible": "^6.0.0",
     "fastify": "^5.0.0",
     "fastify-cli": "^7.4.0",
