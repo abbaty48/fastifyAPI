@@ -9,7 +9,7 @@
   "scripts": {
     "test": "node --test test/**/*.test.js",
     "start": "fastify start info app.js",
-    "dev": "fastify start -w -P app.js",
+    "dev": "npm run -w -P --debug app.js",
     "lint": "standard",
     "lint:fix": "standard --fix",
     "protest": "npm run test"
