@@ -1,6 +1,6 @@
-module.exports.options = {
+export const options = {
   ajv: {
     logger: true,
-    removeAdditional: 'all'
-  }
-}
+    removeAdditional: "all",
+  },
+};

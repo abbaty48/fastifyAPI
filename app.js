@@ -1,45 +1,29 @@
-"use strict";
+import path from "node:path";
+import AutoLoad from "@fastify/autoload";
+import config from "./plugins/config.plugins.js";
 
-const path = require("node:path");
-const AutoLoad = require("@fastify/autoload");
-
-// Pass --options via CLI arguments in command to enable these options.
-
-module.exports = async function (fastify, opts) {
-  // Place here your custom code!
-
-  // Do not touch the following lines
-
-  // This loads all plugins defined in plugins
-  // those should be support plugins that are reused
-  // through your application
-  fastify.register(AutoLoad, {
-    dir: path.join(__dirname, "plugins"),
-    ignorePattern: /.*.no-load\.js/,
-    indexPattern: /^no$/i,
-    dirNameRoutePrefix: false,
-    options: fastify.config,
-  });
-
-  // This loads all the schemas
-  fastify.register(AutoLoad, {
-    dir: path.join(__dirname, "schemas"),
-    indexPattern: /^loader.js$/i,
-  });
-
-  await fastify.register(require("./configs/config"));
-  fastify.log.info("Config loaded to %o", fastify.config);
-
-  // define your routes in one of these
-  fastify.register(AutoLoad, {
-    dir: path.join(__dirname, "routes"),
-    indexPattern: /.*routes(\.js|\.cjs)$/i,
-    ignorePattern: /.*\.js/,
-    autoHooksPattern: /.*hooks(\.js|\.cjs)$/i,
-    autoHooks: true,
-    cascdeHooks: true,
-    options: Object.assign({}, opts),
-  });
-};
-
-module.exports.options = options;
+export default async function (fastify, opts) {
+  const __dirname = process.cwd();
+  await fastify
+    // .register(config)
+    .register(AutoLoad, {
+      dir: path.join(__dirname, "schemas"),
+      indexPattern: /^loader.js$/i,
+    })
+    .register(AutoLoad, {
+      dir: path.join(__dirname, "plugins"),
+      ignorePattern: /.*.no-load\.js/,
+      indexPattern: /^no$/i,
+      dirNameRoutePrefix: false,
+      options: fastify.config,
+    })
+    .register(AutoLoad, {
+      dir: path.join(__dirname, "routes"),
+      indexPattern: /.*routes(\.js|\.cjs)$/i,
+      ignorePattern: /.*\.js/,
+      autoHooksPattern: /.*hooks(\.js|\.cjs)$/i,
+      autoHooks: true,
+      cascdeHooks: true,
+      options: Object.assign({}, opts),
+    });
+}

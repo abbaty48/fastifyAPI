@@ -1,6 +1,6 @@
-const fp = require('fastify-plugin') 
-module.exports = fp(function(fastify, options, next){
-  fastify.addSchema(require('./user-input-headers.json'));
-  fastify.addSchema(require('./dotenv.json'));
-  next();
+import fastifyPlugin from "fastify-plugin";
+import dotEnvSchema from "./dotenv.schemas.json" with { type: "json" };
+
+export default fastifyPlugin(async function (fastify) {
+  fastify.addSchema(dotEnvSchema);
 });
