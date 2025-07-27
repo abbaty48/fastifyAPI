@@ -29,6 +29,12 @@ export default async function todoRoutes(fastify, options)  {
     })
     .put("/:id", {
       handler: async (req, reply) => {
+        const {modifiedCount} = await todosCollection.updateOne(
+          {_id: new fastify.mongo.ObjectId(req.params.id)}, 
+          {$set: {...req.body, updatedAt: new Date()}});
+        if(!modifiedCount) {
+          return reply.code(404).send({error: 'Todo not found.'})
+        }
         reply.code(204);
       }
     })
@@ -43,7 +49,7 @@ export default async function todoRoutes(fastify, options)  {
           ...req.body,
           createdAt: now,
           updatedAt: now
-        });
+        });   
         reply.code(201);
         return {id: _id}
        } catch (error){
@@ -54,6 +60,6 @@ export default async function todoRoutes(fastify, options)  {
     .delete("/:id", {
       handler: async (req, reply) => {
         reply.code(204);
-      }
+      }                       
     });
 }
