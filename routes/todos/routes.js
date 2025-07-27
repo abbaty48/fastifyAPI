@@ -2,6 +2,8 @@ import fastifyPlugin from "fastify-plugin";
 
 export default async function todoRoutes(fastify, options)  {
   
+  const todosCollection = fastify.mongo.db.collection('todos');
+
   fastify
     .get("/", {
       handler: async (req, reply) => {
@@ -20,7 +22,21 @@ export default async function todoRoutes(fastify, options)  {
     })
     .post("/", {
       handler: async (req, reply) => {
-        return {id: 123};
+       try {
+        const now = new Date();
+        const _id = new fastify.mongo.ObjectId();
+        await todosCollection.insertOne({
+           _id,
+          id: _id.toString(),
+          ...req.body,
+          createdAt: now,
+          updatedAt: now
+        });
+        reply.code(201);
+        return {id: _id}
+       } catch (error){
+         throw error;
+       }
       }
     })
     .delete("/:id", {
@@ -28,5 +44,4 @@ export default async function todoRoutes(fastify, options)  {
         reply.code(204);
       }
     });
-
-};
+}
