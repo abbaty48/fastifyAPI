@@ -7,7 +7,12 @@ export default async function todoRoutes(fastify, options)  {
   fastify
     .get("/", {
       handler: async (req, reply) => {
-        return {data: [], totalCount: 0};
+        const {sort, limit, title} = req.query;
+        const filter = title ? {title: new RegExp(title, 'i')} : {};
+        const data = await todosCollection.find(filter, {sort, limit}).toArray();
+        const totalCount = await todosCollection.countDocuments(filter);
+        
+        return {data, totalCount};
       }
     })
     .get("/:id", {
