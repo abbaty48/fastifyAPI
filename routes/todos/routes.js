@@ -17,7 +17,14 @@ export default async function todoRoutes(fastify, options)  {
     })
     .get("/:id", {
       handler: async (req, reply) => {
-        return {};
+        const todo = await todosCollection.findOne({
+          _id: new fastify.mongo.ObjectId(req.params.id)
+        }, {projection: {_id: 0}});
+
+        if(!todo) {
+         return reply.code(404).send({error: 'Todo not found.'})
+        }
+        return todo;
       }
     })
     .put("/:id", {
