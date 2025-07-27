@@ -59,6 +59,11 @@ export default async function todoRoutes(fastify, options)  {
     })
     .delete("/:id", {
       handler: async (req, reply) => {
+        const {deletedCount} = await todosCollection.deleteOne(
+          {_id: new fastify.mongo.ObjectId(req.params.id)});
+        if(!deletedCount) {
+          return reply.code(404).send({error: 'Todo not found.'})
+        }
         reply.code(204);
       }                       
     });
