@@ -6,6 +6,7 @@ export default async function todoRoutes(fastify, options)  {
 
   fastify
     .get("/", {
+      schema: {query: fastify.getSchema("schema:todo:list:query")},
       handler: async (req, reply) => {
         const {sort, limit, title} = req.query;
         const filter = title ? {title: new RegExp(title, 'i')} : {};
@@ -39,6 +40,7 @@ export default async function todoRoutes(fastify, options)  {
       }
     })
     .put("/:id/:status", {
+      schema: {params: fastify.getSchema("schema:todo:status:params")},
       handler: async (req, reply) => {
        const done = req.params.status === 'done';
        const {modifiedCount} = await todosCollection.updateOne(
@@ -52,6 +54,10 @@ export default async function todoRoutes(fastify, options)  {
       }
     })
     .post("/", {
+      schema:{
+        body: fastify.getSchema('schema:todo:create:body'),
+        response: {201: fastify.getSchema('schema:todo:create:response')}
+      },
       handler: async (req, reply) => {
        try {
         const now = new Date();

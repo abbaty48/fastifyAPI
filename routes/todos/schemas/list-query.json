@@ -7,10 +7,12 @@
       "type": "string"
     },
     "limit": {
-      "$ref": "schema:limit#/properties/limit"
+      "type": "number",
+      "default": 10
     },
     "skip": {
-      "$ref": "schema:skip#/properties/skip"
+      "type": "number",
+      "default": 0
     }
   }
 }
