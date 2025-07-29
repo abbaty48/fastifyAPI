@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "$id": "schema:auth:register",
+  "required": ["username", "password"],
+  "properties": {
+    "username": { "type": "string" },
+    "password": { "type": "string" }
+  }
+}

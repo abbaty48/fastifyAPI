@@ -1,0 +1,8 @@
+{
+  "type": "object",
+  "$id": "schema:auth:token-header",
+  "required": ["x-token"],
+  "properties": {
+    "x-token": { "type": "string" }
+  }
+}

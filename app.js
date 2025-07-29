@@ -1,14 +1,14 @@
 import path from "node:path";
 import AutoLoad from "@fastify/autoload";
-import config from "./plugins/config.plugins.js";
+import config from "./plugins/config.plugin.no-load.js";
 
 export default async function (fastify, opts) {
   const __dirname = process.cwd();
   await fastify
-    // .register(config)
+    .register(config)
     .register(AutoLoad, {
-      dir: path.join(__dirname, "schemas"),
-      indexPattern: /^loader.js$/i,
+      dir: "./schemas",
+      indexPattern: /^.*loader\.js$/,
     })
     .register(AutoLoad, {
       dir: path.join(__dirname, "plugins"),
@@ -18,12 +18,12 @@ export default async function (fastify, opts) {
       options: fastify.config,
     })
     .register(AutoLoad, {
-      dir: path.join(__dirname, "routes"),
-      indexPattern: /.*routes(\.js|\.cjs)$/i,
-      ignorePattern: /.*\.js/,
-      autoHooksPattern: /.*hooks(\.js|\.cjs)$/i,
       autoHooks: true,
       cascdeHooks: true,
+      ignorePattern: /.*\.js/,
+      dir: path.join(__dirname, "routes"),
+      indexPattern: /.*routes(\.js|\.cjs)$/i,
+      autoHooksPattern: /.*hooks(\.js|\.cjs)$/i,
       options: Object.assign({}, opts),
     });
 }
