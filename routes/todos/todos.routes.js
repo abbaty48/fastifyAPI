@@ -1,4 +1,5 @@
-export default async function todoRoutes(fastify, options) {
+export default async function todoRoutes(fastify) {
+  fastify.addHook("onRequest", fastify.authenticate);
   const todosCollection = fastify.mongo.db.collection("todos");
 
   fastify
@@ -7,6 +8,7 @@ export default async function todoRoutes(fastify, options) {
       handler: async (req, reply) => {
         const { sort, limit, title } = req.query;
         const filter = title ? { title: new RegExp(title, "i") } : {};
+        filter.userId = req.user.id;
         const data = await todosCollection
           .find(filter, { sort, limit })
           .toArray();
@@ -20,6 +22,7 @@ export default async function todoRoutes(fastify, options) {
         const todo = await todosCollection.findOne(
           {
             _id: new fastify.mongo.ObjectId(req.params.id),
+            userId: req.user.id,
           },
           { projection: { _id: 0 } },
         );
@@ -33,7 +36,10 @@ export default async function todoRoutes(fastify, options) {
     .put("/:id", {
       handler: async (req, reply) => {
         const { modifiedCount } = await todosCollection.updateOne(
-          { _id: new fastify.mongo.ObjectId(req.params.id) },
+          {
+            _id: new fastify.mongo.ObjectId(req.params.id),
+            userId: req.user.id,
+          },
           { $set: { ...req.body, updatedAt: new Date() } },
         );
         if (!modifiedCount) {
@@ -47,7 +53,10 @@ export default async function todoRoutes(fastify, options) {
       handler: async (req, reply) => {
         const done = req.params.status === "done";
         const { modifiedCount } = await todosCollection.updateOne(
-          { _id: new fastify.mongo.ObjectId(req.params.id) },
+          {
+            _id: new fastify.mongo.ObjectId(req.params.id),
+            userId: req.user.id,
+          },
           { $set: { done, updatedAt: new Date() } },
         );
         if (!modifiedCount) {
@@ -67,7 +76,8 @@ export default async function todoRoutes(fastify, options) {
           const _id = new fastify.mongo.ObjectId();
           await todosCollection.insertOne({
             _id,
-            id: _id.toString(),
+            id: _id,
+            userId: req.user.id,
             ...req.body,
             done: false,
             createdAt: now,
@@ -84,6 +94,7 @@ export default async function todoRoutes(fastify, options) {
       handler: async (req, reply) => {
         const { deletedCount } = await todosCollection.deleteOne({
           _id: new fastify.mongo.ObjectId(req.params.id),
+          userId: req.user.id,
         });
         if (!deletedCount) {
           return reply.code(404).send({ error: "Todo not found." });

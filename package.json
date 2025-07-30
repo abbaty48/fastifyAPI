@@ -24,9 +24,11 @@
     "@fastify/env": "^5.0.2",
     "@fastify/jwt": "^9.1.0",
     "@fastify/mongodb": "^9.0.2",
+    "@fastify/multipart": "^9.0.3",
     "@fastify/sensible": "^6.0.0",
     "@fastify/swagger": "^9.5.1",
     "bcrypt": "^6.0.0",
+    "csv-parse": "^6.1.0",
     "fastify": "^5.0.0",
     "fastify-cli": "^7.4.0",
     "fastify-plugin": "^5.0.0"

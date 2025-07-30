@@ -12,6 +12,7 @@ export default fastifyPlugin(async (fastify) => {
       },
     })
     .decorate("authenticate", async (request, reply) => {
+      console.log("REQUEST: ", request.headers);
       try {
         await request.jwtVerify();
       } catch (error) {
@@ -24,7 +25,7 @@ export default fastifyPlugin(async (fastify) => {
     .decorateRequest("generateToken", async function () {
       return fastify.jwt.sign(
         {
-          id: String(this.user._id),
+          id: String(this.user.id),
           username: this.user.username,
         },
         {

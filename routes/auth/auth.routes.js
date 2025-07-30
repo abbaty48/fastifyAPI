@@ -19,9 +19,9 @@ export default fastifyPlugin(
           }
 
           try {
-            const { hash, salt } = await fastify.bcrypt.genHash(password);
+            const { hash, salt } = await fastify.bcrypt.genHash({ password });
             const _id = new fastify.mongo.ObjectId();
-            const newUser = await userCollection.createOne({
+            const newUser = await userCollection.insertOne({
               _id,
               id: _id.toString(),
               username,
@@ -40,7 +40,7 @@ export default fastifyPlugin(
       })
       .post("/authenticate", {
         schema: fastify.getSchema("schema:auth:register"),
-        handler: async (req, res) => {
+        handler: async (req, reply) => {
           const { username, password } = req.body;
           const user = await userCollection.findOne({ username });
           if (!user) {
@@ -49,7 +49,10 @@ export default fastifyPlugin(
             throw err;
           }
 
-          const { hash } = await fastify.bcrypt.genHash(password, user.salt);
+          const { hash } = await fastify.bcrypt.genHash({
+            password,
+            salt: user.salt,
+          });
           if (hash !== user.hash) {
             const err = new Error("Wrong credential provided.");
             err.statusCode = 401;
@@ -57,7 +60,7 @@ export default fastifyPlugin(
           }
 
           req.user = user;
-          return refreshHandler(req, reply);
+          return await refreshHandler(req, reply);
         },
       })
       .post("/refresh", {
@@ -75,8 +78,8 @@ export default fastifyPlugin(
         },
       });
 
-    function refreshHandler(request, reply) {
-      const token = request.generateToken();
+    async function refreshHandler(request, reply) {
+      const token = await request.generateToken();
       return { token };
     }
   },
