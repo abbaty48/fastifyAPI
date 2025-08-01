@@ -20,3 +20,8 @@ primary_region = 'jnb'
   memory = '1gb'
   cpu_kind = 'shared'
   cpus = 1
+
+# Enable fly.io to pull our custom metrics into its monitoring solution
+[metrics]
+  port = 9001
+  path = '/metrics'
