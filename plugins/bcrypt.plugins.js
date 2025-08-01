@@ -1,7 +1,7 @@
 import fastifyPlugin from "fastify-plugin";
 import bcrypt from "bcrypt";
 
-export default fastifyPlugin(async (fastify) => {
+export default fastifyPlugin(async (fastify, _, next) => {
   fastify.decorate("bcrypt", {
     genHash: async (
       { password, salt = null, round = 10 } = { password, salt, round },
@@ -17,4 +17,5 @@ export default fastifyPlugin(async (fastify) => {
       return await bcrypt.compare(password, hashPassword);
     },
   });
+  next();
 });

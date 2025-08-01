@@ -7,8 +7,9 @@ import fastifySensible from "@fastify/sensible";
  *
  * @see https://github.com/fastify/fastify-sensible
  */
-export default fastifyPlugin(async function (fastify) {
+export default fastifyPlugin(async function (fastify, _, next) {
   fastify.register(fastifySensible, {
     errorHandler: false,
   });
+  next();
 });

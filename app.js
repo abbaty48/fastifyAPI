@@ -25,5 +25,8 @@ export default async function (fastify, opts) {
       indexPattern: /.*routes(\.js|\.cjs)$/i,
       autoHooksPattern: /.*hooks(\.js|\.cjs)$/i,
       options: Object.assign({}, opts),
+    })
+    .after((err) => {
+      fastify.log.error("Error occur while registering a plugin: ", err);
     });
 }

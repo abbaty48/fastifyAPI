@@ -13,7 +13,7 @@ export const envSchema = {
   },
 };
 
-export default fastifyPlugin(async function (fastify) {
+export default fastifyPlugin(async function (fastify, _, next) {
   await fastify.register(fastifyEnv, {
     confKey: "secrets",
     schema: envSchema,

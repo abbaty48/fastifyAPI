@@ -1,7 +1,7 @@
 import fastifyPlugin from "fastify-plugin";
 import fastifyJWT from "@fastify/jwt";
 
-export default fastifyPlugin(async (fastify) => {
+export default fastifyPlugin(async (fastify, _, next) => {
   const revokeToken = new Map();
 
   fastify
@@ -34,4 +34,5 @@ export default fastifyPlugin(async (fastify) => {
         },
       );
     });
+  next();
 });

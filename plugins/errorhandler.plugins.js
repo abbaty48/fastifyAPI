@@ -1,6 +1,6 @@
 import fastifyPlugin from "fastify-plugin";
 
-export default fastifyPlugin(async function (fastify) {
+export default fastifyPlugin(async function (fastify, _, next) {
   fastify.setErrorHandler((err, req, reply) => {
     if (err.statusCode >= 500) {
       req.log.error({ req, res: reply, err }, err?.message);
@@ -10,4 +10,5 @@ export default fastifyPlugin(async function (fastify) {
     req.log.error({ req, res: reply, err }, err?.message);
     reply.send(err);
   });
+  next();
 });
